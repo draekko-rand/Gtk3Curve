@@ -1,7 +1,5 @@
-/* COMPILE USING:  gcc -Wextra -o test `pkg-config --cflags --libs gtk+-3.0` test.c */
 #include <gtk/gtk.h>
 #include <gtk3curve.h>
-//#include <gtk3curvetest.h>
 
 #define WINDOW_WIDTH  400
 #define WINDOW_HEIGHT 400
