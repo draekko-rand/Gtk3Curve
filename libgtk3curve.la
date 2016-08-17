@@ -1,0 +1,36 @@
+
+# The name that we can dlopen(3).
+dlname='libgtk3curve-1.0.so.0'
+
+# Names of this library.
+library_names='libgtk3curve-1.0.so.0.1.0 libgtk3curve-1.0.so.0 libgtk3curve-1.0.so'
+
+# The name of the static archive.
+old_library='libgtk3curve.a'
+
+# Linker flags that can not go in dependency_libs.
+inherited_linker_flags=''
+
+# Libraries that this one depends upon.
+dependency_libs=' -lgtk-3 -lgdk-3 -lpangocairo-1.0 -lpango-1.0 -latk-1.0 -lcairo-gobject -lcairo -lgdk_pixbuf-2.0 -lgio-2.0 -lgobject-2.0 -lglib-2.0 -lm '
+
+# Names of additional weak libraries provided by this library
+weak_library_names=''
+
+# Version information for libgtk3curve.
+current=1
+age=1
+revision=0
+
+# Is this an already installed library?
+installed=yes
+
+# Should we warn about portability when linking against -modules?
+shouldnotlink=no
+
+# Files to dlopen/dlpreopen
+dlopen=''
+dlpreopen=''
+
+# Directory that this library needs to be installed in:
+libdir='/usr/local/lib'
