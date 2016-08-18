@@ -30,6 +30,7 @@
 
 typedef enum
 {
+  GTK3_CURVE_GRID_MICRO,
   GTK3_CURVE_GRID_SMALL,
   GTK3_CURVE_GRID_MEDIUM,
   GTK3_CURVE_GRID_LARGE,
@@ -47,14 +48,42 @@ typedef enum
 typedef struct _Gtk3Curve           Gtk3Curve;
 typedef struct _Gtk3CurveClass      Gtk3CurveClass;
 typedef struct _Gtk3CurvePrivate    Gtk3CurvePrivate;
-typedef struct _CurveColor          CurveColor;
+typedef struct _Gtk3CurveColor      Gtk3CurveColor;
+typedef struct _Gtk3CurveData       Gtk3CurveData;
+typedef struct _Gtk3CurveVector     Gtk3CurveVector;
+typedef struct _Gtk3CurvePoint      Gtk3CurvePoint;
 
-struct _CurveColor
+struct _Gtk3CurvePoint
+{
+  gint x;
+  gint y;
+};
+
+struct _Gtk3CurveColor
 {
   gfloat red;
   gfloat green;
   gfloat blue;
   gfloat alpha;
+};
+
+struct _Gtk3CurveVector
+{
+  gfloat x;
+  gfloat y;
+};
+
+struct _Gtk3CurveData
+{
+  gchar            *description;
+
+  Gtk3CurveType     curve_type;
+
+  gint              n_points;
+  Gtk3CurvePoint   *d_point;
+
+  gint              n_cpoints;
+  Gtk3CurveVector  *d_cpoints;
 };
 
 struct _Gtk3Curve
@@ -80,28 +109,63 @@ GType gtk3_curve_type_get_type (void);
 GType gtk3_curve_get_type (void) G_GNUC_CONST;
 GtkWidget*  gtk3_curve_new (void);
 
-void    gtk3_curve_reset         (GtkWidget *widget);
-void    gtk3_curve_set_gamma     (GtkWidget *widget, gfloat gamma_);
-void    gtk3_curve_set_range     (GtkWidget *widget,
-                                  gfloat min_x, gfloat max_x,
-                                  gfloat min_y, gfloat max_y);
-void    gtk3_curve_get_vector    (GtkWidget *widget,
-                                  gint veclen, gfloat vector[]);
-void    gtk3_curve_set_vector    (GtkWidget *widget,
-                                  gint veclen, gfloat vector[]);
-void    gtk3_curve_set_curve_type (GtkWidget *widget, Gtk3CurveType type);
-void    gtk3_curve_set_color_background (GtkWidget *widget, gfloat r,
-                                  gfloat g, gfloat b, gfloat a);
-void    gtk3_curve_set_color_line      (GtkWidget *widget, gfloat r,
-                                  gfloat g, gfloat b, gfloat a);
-void    gtk3_curve_set_color_dot       (GtkWidget *widget, gfloat r,
-                                  gfloat g, gfloat b, gfloat a);
-CurveColor gtk3_curve_get_color_background (GtkWidget *widget);
-CurveColor gtk3_curve_get_color_line   (GtkWidget *widget);
-CurveColor gtk3_curve_get_color_dot    (GtkWidget *widget);
-void gtk3_curve_set_use_theme_background (GtkWidget *widget, gboolean use);
-gboolean gtk3_curve_get_use_theme_background (GtkWidget *widget);
-void gtk3_curve_set_grid_size(GtkWidget *widget, Gtk3CurveGridSize size);
-Gtk3CurveGridSize gtk3_curve_get_grid_size(GtkWidget *widget);
+void gtk3_curve_reset                             (GtkWidget         *widget);
+void gtk3_curve_set_gamma                         (GtkWidget         *widget,
+                                                   gfloat             gamma_);
+void gtk3_curve_set_range                         (GtkWidget         *widget,
+                                                   gfloat             min_x,
+                                                   gfloat             max_x,
+                                                   gfloat             min_y,
+                                                   gfloat             max_y);
+void gtk3_curve_get_vector                        (GtkWidget         *widget,
+                                                   gint               veclen,
+                                                   gfloat             vector[]);
+void gtk3_curve_set_vector                        (GtkWidget         *widget,
+                                                   gint               veclen,
+                                                   gfloat             vector[]);
+void gtk3_curve_set_curve_type                    (GtkWidget         *widget,
+                                                   Gtk3CurveType      type);
+
+void gtk3_curve_set_color_background              (GtkWidget         *widget,
+                                                   Gtk3CurveColor     color);
+void gtk3_curve_set_color_grid                    (GtkWidget         *widget,
+                                                   Gtk3CurveColor     color);
+void gtk3_curve_set_color_curve                   (GtkWidget         *widget,
+                                                   Gtk3CurveColor     color);
+void gtk3_curve_set_color_cpoint                  (GtkWidget         *widget,
+                                                   Gtk3CurveColor     color);
+
+void gtk3_curve_set_color_background_rgba         (GtkWidget         *widget,
+                                                   gfloat             r,
+                                                   gfloat             g,
+                                                   gfloat             b,
+                                                   gfloat             a);
+void gtk3_curve_set_color_grid_rgba               (GtkWidget         *widget,
+                                                   gfloat             r,
+                                                   gfloat             g,
+                                                   gfloat             b,
+                                                   gfloat             a);
+void gtk3_curve_set_color_curve_rgba              (GtkWidget         *widget,
+                                                   gfloat             r,
+                                                   gfloat             g,
+                                                   gfloat             b,
+                                                   gfloat             a);
+void gtk3_curve_set_color_cpoint_rgba             (GtkWidget         *widget,
+                                                   gfloat             r,
+                                                   gfloat             g,
+                                                   gfloat             b,
+                                                   gfloat             a);
+
+Gtk3CurveColor gtk3_curve_get_color_background    (GtkWidget          *widget);
+Gtk3CurveColor gtk3_curve_get_color_grid          (GtkWidget          *widget);
+Gtk3CurveColor gtk3_curve_get_color_curve         (GtkWidget          *widget);
+Gtk3CurveColor gtk3_curve_get_color_cpoint        (GtkWidget          *widget);
+
+void gtk3_curve_set_use_theme_background          (GtkWidget          *widget,
+                                                   gboolean            use);
+gboolean gtk3_curve_get_use_theme_background      (GtkWidget          *widget);
+void gtk3_curve_set_grid_size                     (GtkWidget          *widget,
+                                                   Gtk3CurveGridSize   size);
+Gtk3CurveGridSize gtk3_curve_get_grid_size        (GtkWidget          *widget);
 
 #endif /* __GTK3_CURVE__H__ */
