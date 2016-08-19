@@ -506,10 +506,10 @@ gtk3_curve_configure (Gtk3Curve *curve)
   gtk_widget_get_allocation (widget, &allocation);
 
   DEBUG_INFO("allocation [%d,%d] [%dx%d]\n",
-          allocation.x,
-          allocation.y,
-          allocation.width,
-          allocation.height);
+             allocation.x,
+             allocation.y,
+             allocation.width,
+             allocation.height);
 
   event->configure.window = g_object_ref (gtk_widget_get_window (widget));
   event->configure.send_event = TRUE;
@@ -903,7 +903,8 @@ gtk3_curve_button_release (GtkWidget        *widget,
   distance = ~0U;
   for (i = 0; i < priv->curve_data.n_cpoints; ++i)
     {
-      cx = project (priv->curve_data.d_cpoints[i].x, min_x, priv->max_x, width);
+      cx = project (priv->curve_data.d_cpoints[i].x,
+                    min_x, priv->max_x, width);
       if ((guint) abs (x - cx) < distance)
         {
           distance = abs (x - cx);
@@ -935,6 +936,7 @@ gtk3_curve_button_release (GtkWidget        *widget,
               priv->curve_data.d_cpoints[0].x = min_x;
               priv->curve_data.d_cpoints[0].y = priv->min_y;
               gtk3_curve_interpolate (widget, width, height);
+
               if (gtk_widget_is_visible (widget))
                 {
                   DEBUG_INFO("queue draw\n");
@@ -942,8 +944,10 @@ gtk3_curve_button_release (GtkWidget        *widget,
                 }
             }
 
-          priv->curve_data.d_cpoints = g_realloc (priv->curve_data.d_cpoints,
-                                      priv->curve_data.n_cpoints * sizeof (*priv->curve_data.d_cpoints));
+          priv->curve_data.d_cpoints =
+            g_realloc (priv->curve_data.d_cpoints,
+                       priv->curve_data.n_cpoints *
+                         sizeof (*priv->curve_data.d_cpoints));
         }
     }
 
@@ -1347,6 +1351,10 @@ gtk3_curve_interpolate (GtkWidget *widget, gint width, gint height)
 
   g_free (vector);
 }
+
+/*                          =====================                          */
+/* ===========================   YE OLDE MATH   ========================== */
+/*                          =====================                          */
 
 /* Solve the tridiagonal equation system that determines the second
    derivatives for the interpolation points.  (Based on Numerical
@@ -1942,4 +1950,15 @@ gtk3_curve_reset (GtkWidget *widget)
        g_signal_emit (curve, curve_type_changed_signal, 0);
        g_object_notify (G_OBJECT (curve), "curve-type");
     }
+}
+
+void
+gtk3_curve_save(Gtk3CurveData *data, gchar *filename) {
+  // TODO - add code here
+}
+
+
+Gtk3CurveData
+gtk3_curve_load(gchar *filename) {
+  // TODO - add code here
 }

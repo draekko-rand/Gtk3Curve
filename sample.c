@@ -18,14 +18,14 @@ int main (int argc, char *argv[])
   gtk_widget_set_name (da, "curve1");
   gtk_widget_set_size_request (da, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-  gtk3_curve_set_color_background_rgba (da, 0.1, 0.1, 0.1, 1.0);
-  gtk3_curve_set_color_grid_rgba (da, 1.0, 1.0, 1.0, 1.0);
-  gtk3_curve_set_color_curve_rgba (da, 1.0, 1.0, 1.0, 1.0);
+  gtk3_curve_set_color_background_rgba (da, 0.8, 0.8, 0.8, 0.5);
+  gtk3_curve_set_color_grid_rgba (da, 0.0, 0.0, 0.0, 0.5);
+  gtk3_curve_set_color_curve_rgba (da, 0.0, 0.0, 0.0, 1.0);
   gtk3_curve_set_color_cpoint_rgba (da, 0.8, 0.3, 0.3, 1.0);
 
   gtk3_curve_set_use_theme_background(da, FALSE);
   gtk_widget_set_size_request (da, WINDOW_WIDTH, WINDOW_HEIGHT);
-  gtk3_curve_set_grid_size (da, GTK3_CURVE_GRID_LARGE);
+  gtk3_curve_set_grid_size (da, GTK3_CURVE_GRID_SMALL);
   gtk3_curve_set_range (da, 0, WINDOW_WIDTH, 0, WINDOW_HEIGHT);
 
   gtk_container_add (GTK_CONTAINER (window), da);

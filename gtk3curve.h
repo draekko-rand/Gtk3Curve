@@ -167,5 +167,8 @@ gboolean gtk3_curve_get_use_theme_background      (GtkWidget          *widget);
 void gtk3_curve_set_grid_size                     (GtkWidget          *widget,
                                                    Gtk3CurveGridSize   size);
 Gtk3CurveGridSize gtk3_curve_get_grid_size        (GtkWidget          *widget);
+void gtk3_curve_save                              (Gtk3CurveData      *data,
+                                                   gchar              *filename);
+Gtk3CurveData gtk3_curve_load                     (gchar              *filename);
 
 #endif /* __GTK3_CURVE__H__ */
