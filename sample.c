@@ -20,7 +20,7 @@ int main (int argc, char *argv[])
 
   gtk3_curve_set_color_background_rgba (da, 0.8, 0.8, 0.8, 0.5);
   gtk3_curve_set_color_grid_rgba (da, 0.0, 0.0, 0.0, 0.5);
-  gtk3_curve_set_color_curve_rgba (da, 0.0, 0.0, 0.0, 1.0);
+  gtk3_curve_set_color_curve_rgba (da, 1.0, 1.0, 1.0, 1.0);
   gtk3_curve_set_color_cpoint_rgba (da, 0.8, 0.3, 0.3, 1.0);
 
   gtk3_curve_set_use_theme_background(da, FALSE);

@@ -164,6 +164,10 @@ static void gtk3_curve_draw_line            (cairo_t              *cr,
 static void gtk3_curve_class_init           (Gtk3CurveClass       *klass);
 static void gtk3_curve_init                 (Gtk3Curve            *self);
 
+static void gtk3_curve_get_cursor_coord     (GtkWidget            *widget,
+                                             gint                 *tx,
+                                             gint                 *ty);
+
 static inline gpointer
 gtk3_curve_get_instance_private (Gtk3Curve *self)
 {
@@ -649,10 +653,10 @@ gtk3_curve_draw (GtkWidget *widget,
         {
           cairo_set_line_width (cr, 0.5);
           cairo_set_source_rgba (cr,
-                                 priv->grid.red,
-                                 priv->grid.green,
-                                 priv->grid.blue,
-                                 priv->grid.alpha);
+                                 priv->curve.red,
+                                 priv->curve.green,
+                                 priv->curve.blue,
+                                 priv->curve.alpha);
           gtk3_curve_draw_line (cr, last_x, last_y, x, y);
         }
 
@@ -759,21 +763,34 @@ gtk3_curve_leave (GtkWidget        *widget,
   return FALSE;
 }
 
+static
+void gtk3_curve_get_cursor_coord(GtkWidget *widget, gint *tx, gint *ty)
+{
+  GdkDeviceManager *device_manager;
+  GdkDevice        *device_pointer;
+  GdkDisplay       *display;
+
+  /*  get the pointer position  */
+  display = gtk_widget_get_display (widget);
+  device_manager = gdk_display_get_device_manager (display);
+  device_pointer = gdk_device_manager_get_client_pointer (device_manager);
+  gdk_window_get_device_position (gtk_widget_get_window (widget),
+                                  device_pointer,
+                                  tx, ty, NULL);
+}
 
 static gboolean
 gtk3_curve_button_press (GtkWidget        *widget,
                          GdkEventButton   *event)
 {
   Gtk3CurvePrivate *priv = GTK3_CURVE (widget)->priv;
-  GdkCursorType new_type = priv->cursor_type;
-  GdkDeviceManager *device_manager;
-  GdkDevice        *device_pointer;
-  GtkAllocation  allocation;
-  gint cx, x, y, width, height, i;
-  gint closest_point = 0;
-  gfloat rx, ry, min_x;
-  gint tx, ty;
-  guint distance;
+  GdkCursorType     new_type = priv->cursor_type;
+  GtkAllocation     allocation;
+  gint              cx, x, y, width, height, i;
+  gint              closest_point = 0;
+  gfloat            rx, ry, min_x;
+  gint              tx, ty;
+  guint             distance;
 
   DEBUG_INFO("button press [S]\n");
 
@@ -789,14 +806,13 @@ gtk3_curve_button_press (GtkWidget        *widget,
     return FALSE;
 
   /*  get the pointer position  */
-  device_manager = gdk_display_get_device_manager (
-                     gtk_widget_get_display (widget));
-  device_pointer = gdk_device_manager_get_client_pointer (device_manager);
-  gdk_window_get_device_position (gtk_widget_get_window (widget),
-                                  device_pointer,
-                                  &tx, &ty, NULL);
+  gtk3_curve_get_cursor_coord (widget, &tx, &ty);
   x = CLAMP ((tx - RADIUS), 0, width - 1);
   y = CLAMP ((ty - RADIUS), 0, height - 1);
+
+  DEBUG_INFO("press : xy[%dx%d] txy[%dx%d]\n",
+              x, y,
+              tx, ty);
 
   min_x = priv->min_x;
 
@@ -866,15 +882,13 @@ gtk3_curve_button_release (GtkWidget        *widget,
                            GdkEventButton   *event)
 {
   Gtk3CurvePrivate *priv = GTK3_CURVE (widget)->priv;
-  GdkDeviceManager *device_manager;
-  GdkDevice        *device_pointer;
-  GtkAllocation  allocation;
-  GdkCursorType new_type = priv->cursor_type;
-  gint  src, dst, cx, x, y, width, height, i;
-  gfloat rx, ry, min_x;
-  gint closest_point = 0;
-  guint distance;
-  gint tx, ty;
+  GtkAllocation     allocation;
+  GdkCursorType     new_type = priv->cursor_type;
+  gint              src, dst, cx, x, y, width, height, i;
+  gfloat            rx, ry, min_x;
+  gint              closest_point = 0;
+  guint             distance;
+  gint              tx, ty;
 
   DEBUG_INFO("button release [S]\n");
 
@@ -889,14 +903,13 @@ gtk3_curve_button_release (GtkWidget        *widget,
     return FALSE;
 
   /*  get the pointer position  */
-  device_manager = gdk_display_get_device_manager (
-                     gtk_widget_get_display (widget));
-  device_pointer = gdk_device_manager_get_client_pointer (device_manager);
-  gdk_window_get_device_position (gtk_widget_get_window (widget),
-                                  device_pointer,
-                                  &tx, &ty, NULL);
+  gtk3_curve_get_cursor_coord (widget, &tx, &ty);
   x = CLAMP ((tx - RADIUS), 0, width - 1);
   y = CLAMP ((ty - RADIUS), 0, height - 1);
+
+  DEBUG_INFO("release : xy[%dx%d] txy[%dx%d]\n",
+              x, y,
+              tx, ty);
 
   min_x = priv->min_x;
 
@@ -964,20 +977,17 @@ gtk3_curve_motion_notify (GtkWidget        *widget,
                           GdkEventMotion   *event)
 {
   Gtk3CurvePrivate *priv = GTK3_CURVE (widget)->priv;
-  GdkDeviceManager *device_manager;
-  GdkDevice        *device_pointer;
-  GtkAllocation  allocation;
-  GdkCursorType new_type = priv->cursor_type;
-  gint i, src, dst, leftbound, rightbound;
-  GdkEventMotion *mevent;
-  gint tx, ty;
-  gint cx, x, y, width, height;
-  gint closest_point = 0;
-  gfloat rx, ry, min_x;
-  guint distance;
-  gint x1, x2, y1, y2;
-  gint retval = FALSE;
-  gint h,w;
+  GtkAllocation     allocation;
+  GdkCursorType     new_type = priv->cursor_type;
+  gint              i, src, dst, leftbound, rightbound;
+  GdkEventMotion   *mevent;
+  gint              tx, ty, h,w;
+  gint              cx, x, y, width, height;
+  gint              closest_point = 0;
+  gfloat            rx, ry, min_x;
+  guint             distance;
+  gint              x1, x2, y1, y2;
+  gint              retval = FALSE;
 
   DEBUG_INFO("motion_notify [S]\n");
   mevent = (GdkEventMotion *) event;
@@ -992,14 +1002,13 @@ gtk3_curve_motion_notify (GtkWidget        *widget,
     return FALSE;
 
   /*  get the pointer position  */
-  device_manager = gdk_display_get_device_manager (
-                     gtk_widget_get_display (widget));
-  device_pointer = gdk_device_manager_get_client_pointer (device_manager);
-  gdk_window_get_device_position (gtk_widget_get_window (widget),
-                                  device_pointer,
-                                  &tx, &ty, NULL);
+  gtk3_curve_get_cursor_coord (widget, &tx, &ty);
   x = CLAMP ((tx - RADIUS), 0, width - 1);
   y = CLAMP ((ty - RADIUS), 0, height - 1);
+
+  DEBUG_INFO("motion : xy[%dx%d] txy[%dx%d]\n",
+              x, y,
+              tx, ty);
 
   min_x = priv->min_x;
 
