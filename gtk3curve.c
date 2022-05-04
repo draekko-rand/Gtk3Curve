@@ -1344,6 +1344,7 @@ gtk3_curve_interpolate (GtkWidget *widget, gint width, gint height)
   gfloat *vector;
   int i;
 
+  if (width < 0 || height < 0) return;
   vector = g_malloc (width * sizeof (vector[0]));
 
   gtk3_curve_get_vector (widget, width, vector);
