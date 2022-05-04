@@ -31,7 +31,7 @@ CFLAGS = -g -DDEBUG -fPIC $(INCLUDES) $(GTK_CFLAGS)
 .c :
 	$(CC) $(CFLAGS) $< -o $@ $(LIBS)
 
-LIB_SRC = gtk3curve.c gtkgamma.c Gtk3CurveResource.c
+LIB_SRC = gtk3curve.c gtk3gamma.c Gtk3CurveResource.c
 LIB_OBJ = $(addsuffix .o, $(basename $(LIB_SRC)))
 SRC = sample.c $(LIB_SRC)
 APP_OBJ = $(addsuffix .o, $(basename $(SRC)))

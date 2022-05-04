@@ -1,6 +1,6 @@
 #include <gtk/gtk.h>
 #include <gtk3curve.h>
-#include <gtkgamma.h>
+#include <gtk3gamma.h>
 
 #define WINDOW_WIDTH  400
 #define WINDOW_HEIGHT 400

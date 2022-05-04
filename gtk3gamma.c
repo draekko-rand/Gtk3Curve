@@ -35,7 +35,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "gtkgamma.h"
+#include "gtk3gamma.h"
 
 
 /* forward declarations: */
