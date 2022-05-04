@@ -71,7 +71,7 @@ gtk3_gamma_curve_class_init (Gtk3GammaCurveClass *class)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (class);
   
-  object_class->destroy = gtk3_gamma_curve_destroy;
+ //  object_class->destroy = gtk3_gamma_curve_destroy;
 }
 
 static void
@@ -91,7 +91,8 @@ gtk3_gamma_curve_init (Gtk3GammaCurve *curve)
   gtk_grid_set_row_homogeneous (GTK_GRID (curve->table), FALSE);
   
   //gtk_table_set_col_spacings (GTK_TABLE (curve->table), 3);
-  gtk_box_append (GTK_BOX (curve), curve->table);
+  gtk_container_add (GTK_CONTAINER (curve), curve->table);
+  // GTK4 => gtk_box_append (GTK_BOX (curve), curve->table);
   
   curve->curve = gtk3_curve_new ();
   g_signal_connect (curve->curve, "curve-type-changed",
@@ -109,12 +110,14 @@ gtk3_gamma_curve_init (Gtk3GammaCurve *curve)
 	  curve->button[i] = gtk_toggle_button_new ();
 
       image = gtk_image_new_from_resource (button_images[i]);
-      gtk_button_set_child (GTK_BUTTON (curve->button[i]), image);
+      gtk_button_set_image (GTK_BUTTON (curve->button[i]), image);
+     // GTK 4 => gtk_button_set_child (GTK_BUTTON (curve->button[i]), image);
       
-      g_object_set_data (G_OBJECT (curve->button[i]), I_("_Gtk3GammaCurveIndex"),
+      g_object_set_data (G_OBJECT (curve->button[i]), "_Gtk3GammaCurveIndex",
 			 GINT_TO_POINTER (i));
-      gtk_box_append (GTK_BOX (vbox), curve->button[i]);
-      g_signal_connect (curve->button[i], "toggled",
+	  gtk_container_add (GTK_CONTAINER (vbox), curve->button[i]);
+      // GTK4 => gtk_box_append (GTK_BOX (vbox), curve->button[i]);
+      g_signal_connect (G_OBJECT (curve->button[i]), "toggled",
 			G_CALLBACK (button_toggled_callback), curve);
       gtk_widget_show (curve->button[i]);
     }
@@ -125,12 +128,14 @@ gtk3_gamma_curve_init (Gtk3GammaCurve *curve)
       curve->button[i] = gtk_button_new ();
 
       image = gtk_image_new_from_resource (button_images[i]);
-      gtk_button_set_child (GTK_BUTTON (curve->button[i]), image);
+      gtk_button_set_image (GTK_BUTTON (curve->button[i]), image);
+     // GTK 4 => gtk_button_set_child (GTK_BUTTON (curve->button[i]), image);
       
-      g_object_set_data (G_OBJECT (curve->button[i]), I_("_Gtk3GammaCurveIndex"),
+      g_object_set_data (G_OBJECT (curve->button[i]), "_Gtk3GammaCurveIndex",
 			 GINT_TO_POINTER (i));
-      gtk_box_append (GTK_BOX (vbox), curve->button[i]);
-      g_signal_connect (curve->button[i], "clicked",
+	  gtk_container_add (GTK_CONTAINER (vbox), curve->button[i]);
+      // GTK4 => gtk_box_append (GTK_BOX (vbox), curve->button[i]);
+      g_signal_connect (G_OBJECT (curve->button[i]), "clicked",
 			G_CALLBACK (button_clicked_callback), curve);
       gtk_widget_show (curve->button[i]);
     }
@@ -165,7 +170,7 @@ button_toggled_callback (GtkWidget *w, gpointer data)
     case 1:  type = GTK3_CURVE_TYPE_LINEAR; break;
     default: type = GTK3_CURVE_TYPE_FREE; break;
     }
-  gtk3_curve_set_curve_type (GTK_CURVE (c->curve), type);
+  gtk3_curve_set_curve_type (c->curve, type);
 }
 
 static void
@@ -189,14 +194,15 @@ gamma_response_callback (GtkWidget *w,
            gchar *end;
            gfloat v;
 
-           start = gtk_editable_get_text (GTK_EDITABLE (c->gamma_text));
+           start = gtk_entry_get_text (GTK_ENTRY (c->gamma_text));
+           // GTK 4 => start = gtk_editable_get_text (GTK_EDITABLE (c->gamma_text));
            if (start)
              {
                   v = g_strtod (start, &end);
                   if (end > start && v > 0.0)
 	                   c->gamma = v;
              }
-          gtk3_curve_set_gamma (GTK3_CURVE (c->curve), c->gamma);
+          gtk3_curve_set_gamma (c->curve, c->gamma);
 	  }
    gamma_cancel_callback (w, data);
 }
@@ -218,11 +224,11 @@ button_clicked_callback (GtkWidget *w, gpointer data)
 	  GtkWidget *vbox, *hbox, *label, *button;
 	  gchar buf[64];
 	  
-	  c->gamma_dialog = gtk_dialog_new_with_buttons (_("Gamma"),
+	  c->gamma_dialog = gtk_dialog_new_with_buttons ("Gamma",
 	                                                                                       GTK_WINDOW (w),
 	                                                                                       GTK_DIALOG_DESTROY_WITH_PARENT,
-	                                                                                      GTK_STOCK_OK, GTK_RESPONSE_OK,
-	                                                                                       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+	                                                                                       "Ok", GTK_RESPONSE_OK,
+	                                                                                       "Cancel", GTK_RESPONSE_CANCEL,
 	                                                                                       NULL);
 
       g_object_add_weak_pointer (G_OBJECT (c->gamma_dialog),
@@ -233,21 +239,22 @@ button_clicked_callback (GtkWidget *w, gpointer data)
 	  hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, /* spacing */ 0);
       gtk_box_set_homogeneous (GTK_BOX (hbox), FALSE);
   
-	  // gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, 2);
-	  gtk_box_append (GTK_BOX (vbox), hbox);
+	  gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, 2);
+	  // GTK4 => gtk_box_append (GTK_BOX (vbox), hbox);
 	  gtk_widget_show (hbox);
 	  
-	  label = gtk_label_new_with_mnemonic (_("_Gamma value"));
-	  // gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 2);
-	  gtk_box_append (GTK_BOX (hbox), label);
+	  label = gtk_label_new_with_mnemonic ("_Gamma value");
+	  gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 2);
+	  // GTK4 => gtk_box_append (GTK_BOX (hbox), label);
 	  gtk_widget_show (label);
 	  
 	  sprintf (buf, "%g", c->gamma);
 	  c->gamma_text = gtk_entry_new ();
       gtk_label_set_mnemonic_widget (GTK_LABEL (label), c->gamma_text);
-	  gtk_editable_set_text (GTK_EDITABLE (c->gamma_text), buf);
-	  // gtk_box_pack_start (GTK_BOX (hbox), c->gamma_text, TRUE, TRUE, 2);
-	  gtk_box_append (GTK_BOX (hbox), c->gamma_text);
+      gtk_entry_set_text (GTK_ENTRY (c->gamma_text), buf);
+	   // GTK4 => gtk_editable_set_text (GTK_EDITABLE (c->gamma_text), buf);
+	  gtk_box_pack_start (GTK_BOX (hbox), c->gamma_text, TRUE, TRUE, 2);
+	  // GTK4 => gtk_box_append (GTK_BOX (hbox), c->gamma_text);
 	  gtk_widget_show (c->gamma_text);
 
 	  /* fill in action area: */
@@ -261,7 +268,7 @@ button_clicked_callback (GtkWidget *w, gpointer data)
   else
     {
       /* reset */
-      gtk3_curve_reset (GTK3_CURVE (c->curve));
+      gtk3_curve_reset (c->curve);
     }
 }
 
@@ -272,7 +279,7 @@ curve_type_changed_callback (GtkWidget *w, gpointer data)
   Gtk3CurveType new_type;
   int active;
 
-  new_type = GTK3_CURVE (w)->curve_type;
+  new_type = gtk3_curve_get_curve_type (w);
   switch (new_type)
     {
     case GTK3_CURVE_TYPE_SPLINE: active = 0; break;
@@ -298,6 +305,6 @@ gtk3_gamma_curve_destroy (GtkWidget *object)
   if (c->gamma_dialog)
     gtk_widget_destroy (c->gamma_dialog);
 
-  G_OBJECT_CLASS (gtk3_gamma_curve_parent_class)->destroy (object);
+  // G_OBJECT_CLASS (gtk3_gamma_curve_parent_class)->destroy (object);
 }
 
