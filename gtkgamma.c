@@ -47,11 +47,11 @@ static void button_toggled_callback     (GtkWidget *w, gpointer data);
 static void button_clicked_callback     (GtkWidget *w, gpointer data);
 
 static const gchar * button_images[] = {
-	"button/spline.png" ,
-	"button/linear.png" ,
-	"button/free.png" ,
-	"button/gamma.png" ,
-	"button/reset.png"
+	"/images/spline.png" ,
+	"/images/linear.png" ,
+	"/images/free.png" ,
+	"/images/gamma.png" ,
+	"/images/reset.png"
 };
 
 enum
