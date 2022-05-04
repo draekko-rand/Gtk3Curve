@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource>
+    <file>images/spline.png</file>
+    <file>images/lineart.png</file>
+    <file>images/free.png</file>
+    <file>images/gamma.png</file>
+    <file>images/reset.png</file>
+  </gresource>
+</gresources>
