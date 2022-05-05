@@ -1,7 +1,7 @@
-Gtk3Curve Widget
+Gtk3Curve Widget and Gtk3GammaCurve
 ===
 
-A Gtk+-3 Reimplementation of the GtkCurve widget from Gtk+-2.
+A Gtk+-3 Reimplementation of the GtkCurve and GtkGammaCurve widget from Gtk+-2.
 
 * Features added ability to select background, grid & curve, and dot handle colors.
 
