@@ -156,6 +156,7 @@ void gtk3_curve_set_color_cpoint_rgba             (GtkWidget         *widget,
                                                    gfloat             b,
                                                    gfloat             a);
 
+Gtk3CurveType  gtk3_curve_get_curve_type                    (GtkWidget         *widget);
 Gtk3CurveColor gtk3_curve_get_color_background    (GtkWidget          *widget);
 Gtk3CurveColor gtk3_curve_get_color_grid          (GtkWidget          *widget);
 Gtk3CurveColor gtk3_curve_get_color_curve         (GtkWidget          *widget);

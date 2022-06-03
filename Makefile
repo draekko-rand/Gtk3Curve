@@ -31,7 +31,7 @@ CFLAGS = -g -DDEBUG -fPIC $(INCLUDES) $(GTK_CFLAGS)
 .c :
 	$(CC) $(CFLAGS) $< -o $@ $(LIBS)
 
-LIB_SRC = gtk3curve.c
+LIB_SRC = gtk3curve.c gtk3gamma.c Gtk3CurveResource.c
 LIB_OBJ = $(addsuffix .o, $(basename $(LIB_SRC)))
 SRC = sample.c $(LIB_SRC)
 APP_OBJ = $(addsuffix .o, $(basename $(SRC)))
@@ -51,7 +51,7 @@ lib_shared: $(LIB_OBJ)
 	$(LN) -sf $(SHARED_LIB) $(LN_0_SHARED_LIB)
 
 clean:
-	rm -f $(LIB_OBJ) $(APP_OBJ) $(BIN) *~ *.a *.so*
+	rm -f $(LIB_OBJ) $(APP_OBJ) $(BIN) *~ *.a *.so* *.la
 
 install: lib_static lib_shared
 	install -m 755 -D $(STATIC_LIB) $(LIB_DEST)/$(STATIC_LIB)
