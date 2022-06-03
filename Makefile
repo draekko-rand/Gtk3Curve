@@ -10,7 +10,7 @@ AR = ar
 CC = gcc
 RANLIB = ranlib
 
-BIN = gtk3curve-sample
+BIN = gtk3curve-sample gtk3gammacurve-sample
 LN_SHARED_LIB = libgtk3curve-1.0.so
 LN_0_SHARED_LIB = $(LN_SHARED_LIB).0
 SHARED_LIB = $(LN_0_SHARED_LIB).1.0
