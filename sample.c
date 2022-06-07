@@ -16,11 +16,20 @@ int main (int argc, char *argv[])
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   g_signal_connect (window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
 
-  gamma = gtk3_gamma_curve_new ();
-  da = GTK3_GAMMA_CURVE (gamma)->curve;
-  gtk_widget_set_name (gamma, "curve1");
+  if (strstr(argv[0], "gtk3curve-sample"))
+  {
+     da = gtk3_curve_new ();
+     gtk_widget_set_name (da, "curve1");
+     gamma = da;
+  }
+  else
+  {
+     gamma = gtk3_gamma_curve_new ();
+     da = GTK3_GAMMA_CURVE (gamma)->curve;
+     gtk_widget_set_name (gamma, "GammaCurve");
+     // gtk_widget_set_size_request (da, WINDOW_WIDTH - 18, WINDOW_HEIGHT - 18);
+  }
   gtk_widget_set_size_request (gamma, WINDOW_WIDTH, WINDOW_HEIGHT);
-  gtk_widget_set_size_request (da, WINDOW_WIDTH - 18, WINDOW_HEIGHT - 18);
 
   gtk3_curve_set_color_background_rgba (da, 0.8, 0.8, 0.8, 0.5);
   gtk3_curve_set_color_grid_rgba (da, 0.0, 0.0, 0.0, 0.5);
