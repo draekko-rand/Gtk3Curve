@@ -15,3 +15,4 @@ Contributors
 ===
 
 Ordissimo https://github.com/Ordissimo (Gtk3GammaCurve, code updates)
+cbehan https://github.com/cbehan (makefile cleanup)
