@@ -14,4 +14,5 @@ Note: Currently seems to have rounding issues when display curve data which seem
 Contributors
 ===
 
-Ordissimo https://github.com/Ordissimo (Gtk3GammaCurve, code updates)
+Ordissimo https://github.com/Ordissimo (Gtk3GammaCurve, code updates)\
+cbehan https://github.com/cbehan (makefile cleanup)

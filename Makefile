@@ -47,20 +47,18 @@ lib_static: $(LIB_OBJ)
 
 lib_shared: $(LIB_OBJ)
 	$(CC) -shared -o $(SHARED_LIB) $(LIB_OBJ) $(GTK_LDFLAGS) $(LIBS)
-	$(LN) -sf $(SHARED_LIB) $(LN_SHARED_LIB)
-	$(LN) -sf $(SHARED_LIB) $(LN_0_SHARED_LIB)
 
 clean:
 	rm -f $(LIB_OBJ) $(APP_OBJ) $(BIN) *~ *.a *.so* *.la
 
 install: lib_static lib_shared
-	install -m 755 -D $(STATIC_LIB) $(LIB_DEST)/$(STATIC_LIB)
+	install -m 644 -D $(STATIC_LIB) $(LIB_DEST)/$(STATIC_LIB)
 	install -m 755 -D $(SHARED_LIB) $(LIB_DEST)/$(SHARED_LIB)
-	install -m 755 -D $(LN_SHARED_LIB) $(LIB_DEST)/$(LN_SHARED_LIB)
-	install -m 755 -D $(LN_0_SHARED_LIB) $(LIB_DEST)/$(LN_0_SHARED_LIB)
+	$(LN) -sf $(SHARED_LIB) $(LIB_DEST)/$(LN_SHARED_LIB)
+	$(LN) -sf $(SHARED_LIB) $(LIB_DEST)/$(LN_0_SHARED_LIB)
 	install -m 755 -D libgtk3curve.la $(LIB_DEST)/libgtk3curve.la
-	install -m 755 -D gtk3curve.pc $(PKG_DEST)/gtk3curve.pc
-	install -m 755 -D gtk3curve.h $(INC_DEST)/gtk3curve.h
+	install -m 644 -D gtk3curve.pc $(PKG_DEST)/gtk3curve.pc
+	install -m 644 -D gtk3curve.h $(INC_DEST)/gtk3curve.h
 
 uninstall:
 	rm $(LIB_DEST)/$(STATIC_LIB)
