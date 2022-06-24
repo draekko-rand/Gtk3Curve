@@ -10,7 +10,7 @@ AR = ar
 CC = gcc
 RANLIB = ranlib
 
-BIN = gtk3curve-sample gtk3gammacurve-sample
+BIN = gtk3curve-sample gtk3gammacurve-sample gtk3ruler-sample
 LN_SHARED_LIB = libgtk3curve-1.0.so
 LN_0_SHARED_LIB = $(LN_SHARED_LIB).0
 SHARED_LIB = $(LN_0_SHARED_LIB).1.0
@@ -61,6 +61,8 @@ install: lib_static lib_shared
 	install -m 755 -D libgtk3curve.la $(LIB_DEST)/libgtk3curve.la
 	install -m 755 -D gtk3curve.pc $(PKG_DEST)/gtk3curve.pc
 	install -m 755 -D gtk3curve.h $(INC_DEST)/gtk3curve.h
+	install -m 755 -D gtk3curve.h $(INC_DEST)/gtk3gammacurve.h
+	install -m 755 -D gtk3curve.h $(INC_DEST)/gtk3ruler.h
 
 uninstall:
 	rm $(LIB_DEST)/$(STATIC_LIB)
@@ -70,3 +72,5 @@ uninstall:
 	rm $(LIB_DEST)/libgtk3curve.la
 	rm $(PKG_DEST)/gtk3curve.pc $(PKG_DEST)
 	rm $(INC_DEST)/gtk3curve.h $(INC_DEST)
+	rm $(INC_DEST)/gtk3gammacurve.h $(INC_DEST)
+	rm $(INC_DEST)/gtk3ruler.h $(INC_DEST)

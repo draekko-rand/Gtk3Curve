@@ -299,8 +299,11 @@ gtk3_ruler_dispose (GObject *object)
 
     if (ruler == NULL || priv == NULL || priv->track_widgets == NULL || g_list_length (priv->track_widgets) == 0) { return; }
 
-    while (g_list_length (priv->track_widgets)) {
-        gtk3_ruler_remove_track_widget(ruler, g_list_first (priv->track_widgets)->data);
+    while (priv->track_widgets != NULL) {
+	    GtkWidget *widget = priv->track_widgets->data;
+	    if (!GTK_IS_WIDGET (widget))break;
+	    priv->track_widgets = g_list_remove (priv->track_widgets, widget);
+        gtk3_ruler_remove_track_widget(ruler, widget);
     }
 
     if (priv->pos_redraw_idle_id) {
@@ -309,7 +312,7 @@ gtk3_ruler_dispose (GObject *object)
     }
     priv->track_widgets = NULL;
 
-    G_OBJECT_CLASS (parent_class)->disp	ose(object);
+    G_OBJECT_CLASS (parent_class)->dispose(object);
 }
 
 
@@ -949,13 +952,21 @@ void
 gtk3_ruler_remove_track_widget (Gtk3Ruler   *ruler,
                               GtkWidget *widget)
 {
-  g_return_if_fail (GTK3_IS_RULER   (ruler));
+  if (!GTK3_IS_RULER   (ruler)) return;
   g_return_if_fail (GTK_IS_WIDGET (ruler));
 
   Gtk3RulerPrivate *priv = GTK3_RULER_GET_PRIVATE (ruler);
 
-  g_return_if_fail(g_list_find (priv->track_widgets, widget)->data!=g_list_last (priv->track_widgets)->data);
-  
+  if (priv->track_widgets == NULL) return;
+  GList *lf = g_list_find (priv->track_widgets, widget);
+  GList *fl = g_list_last (priv->track_widgets);
+  if (lf != NULL)
+  {
+     GtkWidget *wlf = lf->data;
+     GtkWidget *wfl = fl->data;
+     g_return_if_fail (wfl == wlf);
+  }
+ 
   g_signal_handlers_disconnect_by_func (widget,
                                         (gpointer) G_CALLBACK (gtk3_ruler_track_widget_motion_notify),
                                         ruler);
@@ -964,8 +975,7 @@ gtk3_ruler_remove_track_widget (Gtk3Ruler   *ruler,
                                         ruler);
 
   // priv->track_widgets->erase(widget);
-  priv->track_widgets = g_list_remove (priv->track_widgets, widget);
-  g_object_unref (widget);
+  // gtk_widget_destroy (widget);
 }
 
 /**
@@ -1236,7 +1246,7 @@ gtk3_ruler_draw_ticks (Gtk3Ruler *ruler)
         gdouble subd_incr;
        
         /* hack to get proper subdivisions at full pixels */
-        if (/*unit == *unit_table.getUnit("px") &&*/ scale == 1 && i == 1)
+        if (unit == GTK3_RULER_METRIC_INCHES && scale == 1 && i == 1)
           subd_incr = 1.0;
         else
           subd_incr = ((gdouble) ruler_metric.ruler_scale[scale] / 
